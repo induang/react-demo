@@ -4,6 +4,8 @@ import App from "../App";
 import RequireAuth from "./PrivateRoute";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import Login from "../pages/Login";
+import React from "react";
+import Registration from "../pages/Registration";
 
 const requireCourseForm = (children: ReactJSXElement) => (
   <RequireAuth>{children}</RequireAuth>
@@ -13,7 +15,13 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [{ index: true, element: <Login /> }],
+    children: [
+      { index: true, element: <Login /> },
+      {
+        path: "registration",
+        element: <Registration />,
+      },
+    ],
   },
 ]);
 
