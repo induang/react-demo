@@ -7,15 +7,15 @@ export interface Author {
 	name: string;
 }
 
-export interface AuthorsState {
+export interface AuthorState {
 	authors: Author[];
 }
 
-const initialState: AuthorsState = {
+const initialState: AuthorState = {
 	authors: [],
 };
 
-export const authorSliceName = 'authors';
+export const authorSliceName = 'author';
 export const authorSlice = createSlice({
 	name: authorSliceName,
 	initialState,
