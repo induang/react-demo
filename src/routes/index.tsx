@@ -8,6 +8,7 @@ import React from "react";
 import Registration from "../pages/Registration";
 import Course from "../pages/Course";
 import CourseForm from "../pages/CourseForm";
+import CourseInfo from "../pages/CourseInfo";
 
 const requireCourseForm = (children: ReactJSXElement) => (
   <RequireAuth>{children}</RequireAuth>
@@ -32,7 +33,15 @@ const router = createBrowserRouter([
         element: <Course />,
       },
       {
+        path: "courses/:courseId",
+        element: <CourseInfo />,
+      },
+      {
         path: "courses/add",
+        element: requireCourseForm(<CourseForm />),
+      },
+      {
+        path: "courses/update/:courseId",
         element: requireCourseForm(<CourseForm />),
       },
     ],
