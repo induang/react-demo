@@ -19,7 +19,7 @@ type CourseCardProps = {
 
 function CourseCard({ course }: CourseCardProps) {
   const user = useAppSelector((state: RootState) => state.user);
-  const authors = useAppSelector((state: RootState) => state.authors.authors);
+  const authors = useAppSelector((state: RootState) => state.author.authors);
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();

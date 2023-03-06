@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import React from "react";
 import Registration from "../pages/Registration";
 import Course from "../pages/Course";
+import CourseForm from "../pages/CourseForm";
 
 const requireCourseForm = (children: ReactJSXElement) => (
   <RequireAuth>{children}</RequireAuth>
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "courses",
         element: <Course />,
+      },
+      {
+        path: "courses/add",
+        element: requireCourseForm(<CourseForm />),
       },
     ],
   },
