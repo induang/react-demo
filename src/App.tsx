@@ -1,34 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import * as React from "react";
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+// import Header from "./components/Header/Header";
+import { authorizeThunk } from "./redux/slices/userSlice";
+import { RootState } from "./types/store.type";
+import { useAppSelector, useAppDispatch } from "./redux/store/hooks";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const user = useAppSelector((state: RootState) => state.user);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const token = localStorage.getItem("user_token");
+
+  useEffect(() => {
+    // 	if (token !== null) {
+    // 		if (!user.isAuth) {
+    // 			dispatch(authorizeThunk());
+    // 		}
+    // 	} else if (pathname !== '/registration') {
+    // 		navigate('/login', { replace: true });
+    // 	}
+    // 	return function cleanupToken() {
+    // 		window.localStorage.removeItem('user_token');
+    // 	};
+    // }, [dispatch, navigate, pathname, token, user.isAuth]);
+  }, []);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div>
+      {/* <Header /> */}
+      <Outlet />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
