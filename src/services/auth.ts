@@ -57,3 +57,20 @@ export const fetchAuthorization = async () => {
 		alert(e);
 	}
 };
+
+export const fetchRegistrationData = async (newUser) => {
+	try {
+		const response = await fetch('http://localhost:4000/register', {
+			method: 'POST',
+			body: JSON.stringify(newUser),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (!response.ok) throw new Error('Registration failed.');
+		const res = await response.json();
+		return res;
+	} catch (e) {
+		alert(e);
+	}
+};
