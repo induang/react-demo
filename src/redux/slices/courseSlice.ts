@@ -66,7 +66,8 @@ export const updateCourseAsyncThunk = createAsyncThunk(
 );
 
 export const getCoursesThunk = () => async (dispatch: AppDispatch) => {
-	const { result } = await fetchCoursesData();
+	const res = await fetchCoursesData();
+	const { result } = res.data
 	dispatch(getCourses({ result }));
 };
 

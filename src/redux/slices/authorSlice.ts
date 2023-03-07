@@ -47,7 +47,8 @@ export const saveAuthorAsyncThunk = createAsyncThunk(
 );
 
 export const getAuthorsThunk = () => async (dispatch: AppDispatch) => {
-	const { result } = await fetchAuthorsData();
+	const res = await fetchAuthorsData();
+	const { result } = res.data
 	dispatch(getAuthors({ result }));
 };
 
