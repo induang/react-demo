@@ -52,7 +52,8 @@ export default courseSlice.reducer;
 export const saveCourseAsyncThunk = createAsyncThunk(
 	'',
 	async (course: INewCourseInfo, thunkAPI) => {
-		const { result } = await fetchAddCourse(course);
+		const res = await fetchAddCourse(course);
+		const { result } = res.data
 		return { result: result };
 	}
 );
@@ -60,7 +61,6 @@ export const saveCourseAsyncThunk = createAsyncThunk(
 export const updateCourseAsyncThunk = createAsyncThunk(
 	'',
 	async (course: CourseDetail, thunkAPI) => {
-		console.log('Async thunk: ', course);
 		await fetchUpdateCourse(course);
 	}
 );

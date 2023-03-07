@@ -40,8 +40,9 @@ export default authorSlice.reducer;
 export const saveAuthorAsyncThunk = createAsyncThunk(
 	'',
 	async (authorName: string, thunkAPI) => {
-		const { result } = await fetchAddAuthor(authorName);
-		return { result: result };
+		const res = await fetchAddAuthor(authorName);
+		const { result } = res.data
+		return { result };
 	}
 );
 

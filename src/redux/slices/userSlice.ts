@@ -75,16 +75,18 @@ export default userSlice.reducer;
 const loginAsyncThunk = createAsyncThunk(
 	'',
 	async (loginer: ILoginer, thunkAPI) => {
-		const { user, result } = await fetchLoginData(loginer);
+		const res = await fetchLoginData(loginer);
+		const { user, result} = res.data
 		return {
-			user: user,
-			result: result,
+			user,
+			result
 		};
 	}
 );
 
 const authorizeAsyncThunk = createAsyncThunk('', async () => {
-	const { result } = await fetchAuthorization();
+	const res = await fetchAuthorization();
+	const { result } = res.data
 	return {
 		user: result,
 	};
