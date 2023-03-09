@@ -8,23 +8,24 @@ import { RootState } from "../../types/store.type";
 import { CourseDetail } from "../../types/course.type";
 import { Author } from "../../redux/slices/authorSlice";
 import { H1 } from "../../common/Title";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { fetchCourseById } from "../../services/course";
 
 function CourseInfo() {
   let { courseId } = useParams();
-  const courses = useSelector((state: RootState) => state.course.courses);
   const authors = useSelector((state: RootState) => state.author.authors);
-  const course = courses.filter(
-    (course: CourseDetail) => course.id === courseId
-  )[0];
+  const [course, setCourse] = useState({} as CourseDetail);
+
+  useEffect(() => {
+    fetchCourseById(courseId).then((res) => {
+      setCourse(res.data.result);
+    });
+  }, []);
 
   return (
     <Box p={3}>
       <Link to="/courses">{"<"} Back to courses</Link>
       <Paper className="my-2 p-2">
-        {/* <h1 style={{ display: 'table', margin: '10px auto 20px' }}>
-					{course.title}
-				</h1> */}
         <H1 text={course?.title}></H1>
         <Grid container spacing={2}>
           <Grid item md={7}>
@@ -48,7 +49,7 @@ function CourseInfo() {
             <div id="authors">
               <b>Authors:&nbsp;&nbsp;</b>
               <div className="ml-2">
-                {course?.authors.map((id: string) => (
+                {course?.authors?.map((id: string) => (
                   <div key={id}>
                     {
                       authors.filter((author: Author) => author.id === id)[0]

@@ -18,19 +18,10 @@ type CourseCardProps = {
 };
 
 function CourseCard({ course }: CourseCardProps) {
-  const user = useAppSelector((state: RootState) => state.user);
+  const { role } = useAppSelector((state: RootState) => state.user);
   const authors = useAppSelector((state: RootState) => state.author.authors);
-  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
-
-  const handleDeleteCourseClick = (id: string) => {
-    dispatch(deleteCourseThunk(id));
-  };
-
-  useEffect(() => {
-    dispatch(getAuthorsThunk());
-  }, []);
 
   return (
     <Paper elevation={2} className="my-1 p-1">
@@ -56,48 +47,61 @@ function CourseCard({ course }: CourseCardProps) {
             {formatDate(course.creationDate)}
           </div>
           <div id="showCourseBtn">
-            <Box>
-              <Grid
-                container
-                className="mt-5 justify-items-center items-center"
-              >
-                <Grid item>
-                  <Link to={`${course.id}`}>
-                    <Button variant="outlined" color="secondary">
-                      Show Courses
-                    </Button>
-                  </Link>
-                </Grid>
-                {user.role === "admin" ? (
-                  <Grid item>
-                    <Button
-                      color="secondary"
-                      onClick={() => navigate(`/courses/update/${course.id}`)}
-                    >
-                      <EditRoundedIcon />
-                    </Button>
-                  </Grid>
-                ) : (
-                  <></>
-                )}
-                {user.role === "admin" ? (
-                  <Grid item>
-                    <Button
-                      color="secondary"
-                      onClick={() => handleDeleteCourseClick(course.id)}
-                    >
-                      <DeleteIcon />
-                    </Button>
-                  </Grid>
-                ) : (
-                  <></>
-                )}
+            <Box className="mt-5">
+              <Grid container spacing={1}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => navigate(`/courses/${course.id}`)}
+                >
+                  Show Courses
+                </Button>
+                <AdminPanel isShow={role === "admin"} courseId={course.id} />
               </Grid>
             </Box>
           </div>
         </Grid>
       </Grid>
     </Paper>
+  );
+}
+
+interface AdminPanelProps {
+  isShow: boolean;
+  courseId: string;
+}
+
+function AdminPanel({ isShow, courseId }: AdminPanelProps) {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const handleDeleteCourseClick = (id: string) => {
+    dispatch(deleteCourseThunk(id));
+  };
+  return (
+    <>
+      {isShow ? (
+        <>
+          <Grid item>
+            <Button
+              color="secondary"
+              onClick={() => handleDeleteCourseClick(courseId)}
+            >
+              <DeleteIcon />
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              color="secondary"
+              onClick={() => navigate(`/courses/update/${courseId}`)}
+            >
+              <EditRoundedIcon />
+            </Button>
+          </Grid>
+        </>
+      ) : (
+        <span />
+      )}
+    </>
   );
 }
 

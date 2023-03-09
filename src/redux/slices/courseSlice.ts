@@ -85,7 +85,6 @@ export const deleteCourseThunk =
 
 export const updateCourseThunk =
 	(course: CourseDetail) => async (dispatch: AppDispatch) => {
-		console.log('thunk: ', course);
 		await dispatch(updateCourseAsyncThunk(course)).unwrap();
 		dispatch(updateCourse());
 	};

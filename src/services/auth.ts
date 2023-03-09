@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { ILoginer } from "../types/user.type";
-import httpRequest from '../utils/httpUtils/httpRequest'
+import httpRequest from '../utils/httpRequest'
 
 interface LoginResponse {
 	user: any;

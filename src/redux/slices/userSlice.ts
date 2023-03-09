@@ -15,13 +15,7 @@ export interface UserState {
 	role: string;
 }
 
-const initialState: UserState = {
-	isAuth: false,
-	name: '',
-	email: '',
-	token: '',
-	role: '',
-};
+const initialState: UserState = {} as UserState;
 
 export const userSliceName = 'user';
 export const userSlice = createSlice({

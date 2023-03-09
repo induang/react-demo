@@ -8,6 +8,7 @@ import { loginThunk } from "../../redux/slices/userSlice";
 
 import { RootState } from "../../types/store.type";
 import { H2, H4 } from "../../common/Title";
+import CorsButton from "../../components/CorsButton";
 
 function Login() {
   const [email, setEmail] = useState("");

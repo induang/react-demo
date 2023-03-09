@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import noti from '../noti'
+import noti from './noti'
 
 const httpRequest = axios.create({
 	baseURL: 'http://localhost:4000/',
@@ -35,7 +35,7 @@ httpRequest.interceptors.response.use(
 			window.localStorage.removeItem('user_token')
 			window.location.href = '/login'
 		}
-		return console.log(error) // TODO: notiStack
+		noti({type: 'error', message: error.message})
 	}
 )
 

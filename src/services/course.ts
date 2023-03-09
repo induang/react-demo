@@ -1,6 +1,8 @@
-import httpRequest from "../utils/httpUtils/httpRequest";
+import httpRequest from "../utils/httpRequest";
 
 export const fetchCoursesData = async () => httpRequest.get('/courses/all')
+
+export const fetchCourseById = async (id) => httpRequest.get(`/courses/${id}`)
 
 export const fetchAddCourse = async (newCourse) => httpRequest.post('/courses/add', newCourse)
 

@@ -9,7 +9,6 @@ export default function Auth({ children }: { children: JSX.Element }) {
   if (accessRole === "admin") {
     return children;
   } else {
-    alert("sorry, only admin access");
     return <Navigate to="/courses" replace />;
   }
 }

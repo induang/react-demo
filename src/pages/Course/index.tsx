@@ -8,9 +8,9 @@ import SearchBar from "./components/SearchBar";
 import CourseCard from "./components/CourseCard";
 import { AppDispatch, RootState } from "../../types/store.type";
 import { getCoursesThunk } from "../../redux/slices/courseSlice";
-import { authorizeThunk } from "../../redux/slices/userSlice";
 import React from "react";
 import { CourseDetail } from "../../types/course.type";
+import { getAuthorsThunk } from "../../redux/slices/authorSlice";
 
 const Course: React.FC = () => {
   const courses = useAppSelector((state: RootState) => state.course.courses);
@@ -19,7 +19,7 @@ const Course: React.FC = () => {
 
   useEffect(() => {
     dispatch(getCoursesThunk());
-    dispatch(authorizeThunk());
+    dispatch(getAuthorsThunk());
   }, []);
 
   useEffect(() => {
@@ -41,31 +41,27 @@ const Course: React.FC = () => {
 
   return (
     <Box padding={3}>
+      <Grid container className="justify-between">
+        <Grid item>
+          <SearchBar handleSearch={handleSearch} />
+        </Grid>
+        <Grid item>
+          <Link to="add">
+            <Button variant="outlined" color="secondary">
+              Add new course
+            </Button>
+          </Link>
+        </Grid>
+      </Grid>
+      {/* 课程列表渲染 */}
       <Box>
-        <Box>
-          <Grid container className="flex justify-between">
-            <Grid item>
-              <SearchBar handleSearch={handleSearch} />
-            </Grid>
-            <Grid item>
-              <Link to="add">
-                <Button variant="outlined" color="secondary">
-                  Add new course
-                </Button>
-              </Link>
-            </Grid>
-          </Grid>
-        </Box>
-        {/* 课程列表渲染 */}
-        <Box>
-          {curCourses && curCourses.length ? (
-            curCourses.map((course: CourseDetail) => (
-              <CourseCard key={course.id} course={course} />
-            ))
-          ) : (
-            <span>Loading...</span>
-          )}
-        </Box>
+        {curCourses && curCourses.length ? (
+          curCourses.map((course: CourseDetail) => (
+            <CourseCard key={course.id} course={course} />
+          ))
+        ) : (
+          <span>Loading...</span>
+        )}
       </Box>
     </Box>
   );
