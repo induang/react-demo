@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { loginThunk } from "../../redux/slices/userSlice";
 
 import { RootState } from "../../types/store.type";
-import { H2, H4 } from "../../common/Title";
+import { H2, H4 } from "../../components/Title";
 import CorsButton from "../../components/CorsButton";
 
 function Login() {

@@ -29,13 +29,13 @@ httpRequest.interceptors.response.use(
 	},
 	(error) => {
 		const message = error.response?.data?.errorMessage || error.message
-		noti({type: 'error', message})
+		console.log(error); // TODO noti
 
 		if(error.response?.status === 401){
 			window.localStorage.removeItem('user_token')
 			window.location.href = '/login'
 		}
-		noti({type: 'error', message: error.message})
+		console.log(error) // TODO noti
 	}
 )
 

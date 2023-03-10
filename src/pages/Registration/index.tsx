@@ -5,7 +5,7 @@ import { Button, TextField } from "@mui/material";
 
 import { fetchRegistrationData } from "../../services/auth";
 
-import { H2, H4 } from "../../common/Title";
+import { H2, H4 } from "../../components/Title";
 import React from "react";
 
 function Registration() {

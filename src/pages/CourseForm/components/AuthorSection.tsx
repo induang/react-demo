@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { Author } from "../../../redux/slices/authorSlice";
 import AuthorItem from "./AuthorItem";
 
-import { CH4 } from "../../../common/Title";
+import { CH4 } from "../../../components/Title";
 import React from "react";
 
 type AuthorSectionProps = {
