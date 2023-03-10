@@ -4,7 +4,7 @@ import { Paper, Grid, Button, Box } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { H1 } from "../../../common/Title";
+import { H1 } from "../../../components/Title";
 import { RootState } from "../../../types/store.type";
 import { deleteCourseThunk } from "../../../redux/slices/courseSlice";
 import { Author, getAuthorsThunk } from "../../../redux/slices/authorSlice";

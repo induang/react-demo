@@ -7,7 +7,7 @@ import { formatDate, formatTime } from "../../utils";
 import { RootState } from "../../types/store.type";
 import { CourseDetail } from "../../types/course.type";
 import { Author } from "../../redux/slices/authorSlice";
-import { H1 } from "../../common/Title";
+import { H1 } from "../../components/Title";
 import React, { useEffect, useState } from "react";
 import { fetchCourseById } from "../../services/course";
 
