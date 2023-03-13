@@ -6,7 +6,9 @@ interface LoginResponse {
 	user: any;
 	result: string
 }
-export const fetchLoginData = async (loginer: ILoginer): Promise<AxiosResponse<LoginResponse>> => httpRequest.post('/login', loginer)
+export const fetchLoginData = async (loginer: ILoginer): Promise<AxiosResponse<LoginResponse>> => httpRequest.post('/login', loginer, { headers: {
+	isLoading: true
+}})
 
 export const fetchLogout = async () => httpRequest.delete('/logout')
 

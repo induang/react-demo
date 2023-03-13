@@ -7,7 +7,7 @@ import React from "react";
 
 function Header() {
   const userName = window.localStorage.getItem("user_name");
-
+  const currentPath = window.location.href;
   const handleLOGOUTClick = () => {
     // TODO logout
   };
@@ -19,19 +19,26 @@ function Header() {
           <img src={logo} alt="logo" className="w-24" />
         </Grid>
         <Grid item>
-          <span style={{ fontSize: "20px" }} data-testid="test">
-            {userName}
-          </span>
-          <span className={`${userName ? "" : "invisible"}`}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              sx={{ ml: "20px" }}
-              onClick={handleLOGOUTClick}
-            >
-              LOGOUT
-            </Button>
-          </span>
+          {currentPath.includes("login") ||
+          currentPath.includes("registration") ? (
+            <></>
+          ) : (
+            <>
+              <span style={{ fontSize: "20px" }} data-testid="test">
+                {userName}
+              </span>
+              <span className={`${userName ? "" : "invisible"}`}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  sx={{ ml: "20px" }}
+                  onClick={handleLOGOUTClick}
+                >
+                  LOGOUT
+                </Button>
+              </span>
+            </>
+          )}
         </Grid>
       </Grid>
     </Box>
