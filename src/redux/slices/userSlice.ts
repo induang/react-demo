@@ -25,6 +25,7 @@ export const userSlice = createSlice({
 		login: (state, { payload }) => {
 			const { user, result } = payload;
 			window.localStorage.setItem('user_token', result);
+			window.localStorage.setItem('user_name', user.name)
 			return {
 				...state,
 				isAuth: true,
