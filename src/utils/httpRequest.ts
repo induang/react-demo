@@ -25,13 +25,21 @@ httpRequest.interceptors.request.use(
 
 httpRequest.interceptors.response.use(
 	(response) => {
+		const token = response.headers?.Authorization
+		token && window.localStorage.setItem('user_token', token);	
 		return response
 	},
 	(error) => {
 		const message = error.response?.data?.errorMessage || error.message
-		console.log(error); // TODO noti
+		noti({
+			type: 'error', message
+		})
 
 		if(error.response?.status === 401){
+			noti({
+				type: 'error',
+				message: 'Unauthorization.'
+			})
 			window.localStorage.removeItem('user_token')
 			window.location.href = '/login'
 		}
