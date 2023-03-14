@@ -26,6 +26,7 @@ export default withFormik<ICourseFormProps, ICourseFormDetail>({
     return {} as ICourseFormDetail;
   },
   enableReinitialize: true,
+
   validationSchema: validator,
   handleSubmit: async (values) => {
     console.log("handle submit: ", values);

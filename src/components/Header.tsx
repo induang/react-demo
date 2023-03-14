@@ -1,15 +1,28 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Grid, Button } from "@mui/material";
 import logo from "../assets/logo.jpg";
 
 import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import { fetchLogout } from "../services/auth";
 
 function Header() {
   const userName = window.localStorage.getItem("user_name");
   const currentPath = window.location.href;
+  const navigate = useNavigate();
+
+  const logoutMutation = useMutation({
+    mutationFn: fetchLogout,
+    onSuccess: () => {
+      window.localStorage.removeItem("user_token");
+      window.localStorage.removeItem("user_name");
+      navigate("/login");
+    },
+  });
+
   const handleLOGOUTClick = () => {
-    // TODO logout
+    logoutMutation.mutate();
   };
 
   return (

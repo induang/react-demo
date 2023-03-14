@@ -1,18 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import App from "../App";
-import RequireAuth from "./PrivateRoute";
+// import RequireAuth from "./PrivateRoute";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import Login from "../pages/Login";
 import React from "react";
 import Registration from "../pages/Registration";
 import Course from "../pages/Course";
-import CourseForm from "../pages/CourseForm";
+// import CourseForm from "../pages/CourseForm";
 import CourseInfo from "../pages/CourseInfo";
 
-const requireCourseForm = (children: ReactJSXElement) => (
-  <RequireAuth>{children}</RequireAuth>
-);
+// const requireCourseForm = (children: ReactJSXElement) => (
+//   <RequireAuth>{children}</RequireAuth>
+// );
 
 const router = createBrowserRouter([
   {
@@ -36,14 +36,14 @@ const router = createBrowserRouter([
         path: "courses/:courseId",
         element: <CourseInfo />,
       },
-      {
-        path: "courses/add",
-        element: requireCourseForm(<CourseForm />),
-      },
-      {
-        path: "courses/update/:courseId",
-        element: requireCourseForm(<CourseForm />),
-      },
+      // {
+      //   path: "courses/add",
+      //   element: requireCourseForm(<CourseForm />),
+      // },
+      // {
+      //   path: "courses/update/:courseId",
+      //   element: requireCourseForm(<CourseForm />),
+      // },
     ],
   },
 ]);

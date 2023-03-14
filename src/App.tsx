@@ -1,17 +1,19 @@
 import * as React from "react";
-import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
-import { authorizeThunk } from "./redux/slices/userSlice";
-import { RootState } from "./types/store.type";
-import { useAppSelector, useAppDispatch } from "./redux/store/hooks";
+import {
+  QueryClientProvider,
+  QueryClient,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient();
   return (
-    <div>
+    <QueryClientProvider client={queryClient}>
       <Header />
       <Outlet />
-    </div>
+    </QueryClientProvider>
   );
 }
 

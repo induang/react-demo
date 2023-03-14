@@ -2,42 +2,37 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Button, Grid } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 
 import SearchBar from "./components/SearchBar";
 import CourseCard from "./components/CourseCard";
-import { AppDispatch, RootState } from "../../types/store.type";
-import { getCoursesThunk } from "../../redux/slices/courseSlice";
 import React from "react";
-import { CourseDetail } from "../../types/course.type";
-import { getAuthorsThunk } from "../../redux/slices/authorSlice";
+import { ICourseDetail } from "../../types/course.type";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchCourses } from "../../services/course";
+import { fetchAuthors } from "../../services/author";
 
 const Course: React.FC = () => {
-  const courses = useAppSelector((state: RootState) => state.course.courses);
-  const dispatch: AppDispatch = useAppDispatch();
-  const [curCourses, setCurCourses] = useState(courses);
-
-  useEffect(() => {
-    dispatch(getCoursesThunk());
-    dispatch(getAuthorsThunk());
-  }, []);
-
-  useEffect(() => {
-    setCurCourses(courses);
-  }, [courses]);
-
-  function courseFilter(course: CourseDetail, value: string) {
+  const courses = useQuery({
+    queryKey: ["courses"],
+    queryFn: fetchCourses,
+  });
+  const authorsQuery = useQuery({
+    queryKey: ["authors"],
+    queryFn: fetchAuthors,
+  });
+  const authenQuery = useQuery({
+    queryKey: ['auth'],
+    queryFn: 
+  })
+  function courseFilter(course: ICourseDetail, value: string) {
     return (
       course.title.toLowerCase().search(new RegExp(value, "i")) !== -1 ||
       course.id.search(value) !== -1
     );
   }
+  if (courses.isLoading) return <>Loading...</>;
 
-  function handleSearch(value: string) {
-    setCurCourses([
-      ...courses.filter((course: CourseDetail) => courseFilter(course, value)),
-    ]);
-  }
+  function handleSearch(value: string) {}
 
   return (
     <Box padding={3}>
@@ -55,13 +50,9 @@ const Course: React.FC = () => {
       </Grid>
       {/* 课程列表渲染 */}
       <Box>
-        {curCourses && curCourses.length ? (
-          curCourses.map((course: CourseDetail) => (
-            <CourseCard key={course.id} course={course} />
-          ))
-        ) : (
-          <span>Loading...</span>
-        )}
+        {courses.data?.result?.map((course: ICourseDetail) => (
+          <CourseCard key={course.id} course={course} />
+        ))}
       </Box>
     </Box>
   );

@@ -81,7 +81,7 @@ httpRequest.interceptors.response.use(
     if (response.config.headers.isLoading) {
       hideLoading();
     }
-    return response;
+    return response.data;
   },
   // 响应 错误处理
   (error) => {

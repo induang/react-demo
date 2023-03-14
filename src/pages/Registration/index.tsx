@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Button, TextField } from "@mui/material";
 
-import { fetchRegistrationData } from "../../services/auth";
+import { fetchRegistration } from "../../services/auth";
 
 import { H2, H4 } from "../../components/Title";
 import React from "react";
@@ -28,8 +28,6 @@ function Registration() {
       password: password,
       email: email,
     };
-    let { successful } = await fetchRegistrationData(newUser);
-    if (successful) navigate("/login");
   };
 
   return (

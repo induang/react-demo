@@ -1,26 +1,24 @@
 import { Link, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Grid, Paper } from "@mui/material";
-import { useSelector } from "react-redux";
 
 import { formatDate, formatTime } from "../../utils";
-import { RootState } from "../../types/store.type";
-import { CourseDetail } from "../../types/course.type";
-import { Author } from "../../redux/slices/authorSlice";
 import { H1 } from "../../components/Title";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { fetchCourseById } from "../../services/course";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { IAuthor } from "../../types/author.type";
 
 function CourseInfo() {
   let { courseId } = useParams();
-  const authors = useSelector((state: RootState) => state.author.authors);
-  const [course, setCourse] = useState({} as CourseDetail);
+  const courseQuery = useQuery({
+    queryKey: ["course", courseId],
+    queryFn: () => fetchCourseById(courseId as string),
+  });
 
-  useEffect(() => {
-    fetchCourseById(courseId).then((res) => {
-      setCourse(res.data.result);
-    });
-  }, []);
+  const course = courseQuery?.data?.result;
+  const queryClient = useQueryClient();
+  const authors = queryClient.getQueryData(["authors"]);
 
   return (
     <Box p={3}>
@@ -52,8 +50,9 @@ function CourseInfo() {
                 {course?.authors?.map((id: string) => (
                   <div key={id}>
                     {
-                      authors.filter((author: Author) => author.id === id)[0]
-                        .name
+                      authors?.result?.filter(
+                        (author: IAuthor) => author.id === id
+                      )[0].name
                     }
                   </div>
                 ))}

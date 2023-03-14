@@ -1,28 +1,29 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
-import { Grid, TextField, Button } from "@mui/material";
-import { useAppSelector, useAppDispatch } from "../../../redux/store/hooks";
-
-import { RootState } from "../../../types/store.type";
-
-import { Author, getAuthorsThunk } from "../../../redux/slices/authorSlice";
+import { Grid, Button } from "@mui/material";
 import { formatTime } from "../../../utils";
-
 import { H4, CH2 } from "../../../components/Title";
 import React from "react";
 import InputField from "../../../components/InputField";
 import { FormikFormProps, FormikValues } from "formik";
 import { ICourseFormDetail } from "..";
-import { fetchCourseById } from "../../../services/course";
 import { fetchAddAuthor } from "../../../services/author";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCourseById } from "../../../services/course";
 
 const CourseForm: FunctionComponent<
   FormikFormProps & FormikValues & { data: ICourseFormDetail }
 > = (props) => {
   let { values, handleSubmit, setValues } = props;
   let { courseId } = useParams();
-  const dispatch = useAppDispatch();
+
+  const courseQuery = useQuery({
+    queryKey: ["course", courseId],
+    queryFn: () => fetchCourseById(courseId as string),
+  });
+
+  if (courseQuery?.data) setValues(courseQuery?.data?.result);
 
   const handleCreateAuthorClick = () => {
     if (values.newAuthor === "") {
@@ -33,15 +34,6 @@ const CourseForm: FunctionComponent<
       ); // TODO noti
     }
   };
-
-  useEffect(() => {
-    dispatch(getAuthorsThunk());
-  }, []);
-
-  useEffect(() => {
-    courseId &&
-      fetchCourseById(courseId).then((res) => setValues(res.data.result));
-  }, [courseId]);
 
   return (
     <Box p={3} component="form" onSubmit={handleSubmit}>
