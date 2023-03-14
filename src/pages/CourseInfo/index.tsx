@@ -7,24 +7,27 @@ import { H1 } from "../../components/Title";
 import React from "react";
 import { fetchCourseById } from "../../services/course";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { IAuthor } from "../../types/author.type";
+import { IAuthor, IAuthorsResponse } from "../../types/author.type";
+import { AUTHOR_QUERY, COURSE_QUERY } from "../../queries";
 
 function CourseInfo() {
   let { courseId } = useParams();
   const courseQuery = useQuery({
-    queryKey: ["course", courseId],
+    queryKey: [COURSE_QUERY, courseId],
     queryFn: () => fetchCourseById(courseId as string),
   });
 
   const course = courseQuery?.data?.result;
   const queryClient = useQueryClient();
-  const authors = queryClient.getQueryData(["authors"]);
+  const authors: IAuthorsResponse | undefined = queryClient.getQueryData([
+    AUTHOR_QUERY,
+  ]);
 
   return (
     <Box p={3}>
       <Link to="/courses">{"<"} Back to courses</Link>
       <Paper className="my-2 p-2">
-        <H1 text={course?.title}></H1>
+        <H1 text={String(course?.title)}></H1>
         <Grid container spacing={2}>
           <Grid item md={7}>
             <div className="p-2">
@@ -38,11 +41,11 @@ function CourseInfo() {
             </div>
             <div id="duration">
               <b>Duration:&nbsp;&nbsp;</b>
-              <span>{formatTime(course?.duration) + " hours"}</span>
+              <span>{formatTime(Number(course?.duration)) + " hours"}</span>
             </div>
             <div id="created">
               <b>Created:&nbsp;&nbsp;</b>
-              <span>{formatDate(course?.creationDate)}</span>
+              <span>{formatDate(String(course?.creationDate))}</span>
             </div>
             <div id="authors">
               <b>Authors:&nbsp;&nbsp;</b>

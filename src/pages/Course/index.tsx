@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Button, Grid } from "@mui/material";
@@ -7,29 +6,32 @@ import SearchBar from "./components/SearchBar";
 import CourseCard from "./components/CourseCard";
 import React from "react";
 import { ICourseDetail } from "../../types/course.type";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchCourses } from "../../services/course";
 import { fetchAuthors } from "../../services/author";
+import { fetchAuthorization } from "../../services/auth";
+import { AUTHOR_QUERY, AUTH_QUERY, COURSE_QUERY } from "../../queries";
 
 const Course: React.FC = () => {
   const courses = useQuery({
-    queryKey: ["courses"],
+    queryKey: [COURSE_QUERY],
     queryFn: fetchCourses,
   });
   const authorsQuery = useQuery({
-    queryKey: ["authors"],
+    queryKey: [AUTHOR_QUERY],
     queryFn: fetchAuthors,
   });
   const authenQuery = useQuery({
-    queryKey: ['auth'],
-    queryFn: 
-  })
-  function courseFilter(course: ICourseDetail, value: string) {
-    return (
-      course.title.toLowerCase().search(new RegExp(value, "i")) !== -1 ||
-      course.id.search(value) !== -1
-    );
-  }
+    queryKey: [AUTH_QUERY],
+    queryFn: fetchAuthorization,
+  });
+  const role = authenQuery?.data?.result.role || "";
+  // function courseFilter(course: ICourseDetail, value: string) {
+  //   return (
+  //     course.title.toLowerCase().search(new RegExp(value, "i")) !== -1 ||
+  //     course.id.search(value) !== -1
+  //   );
+  // }
   if (courses.isLoading) return <>Loading...</>;
 
   function handleSearch(value: string) {}
@@ -51,7 +53,7 @@ const Course: React.FC = () => {
       {/* 课程列表渲染 */}
       <Box>
         {courses.data?.result?.map((course: ICourseDetail) => (
-          <CourseCard key={course.id} course={course} />
+          <CourseCard key={course.id} course={course} role={role} />
         ))}
       </Box>
     </Box>

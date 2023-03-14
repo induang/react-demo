@@ -9,7 +9,8 @@ import { ICourseDetail } from "../../../types/course.type";
 import React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchAuthors } from "../../../services/author";
-import { IAuthor } from "../../../types/author.type";
+import { IAuthor, IAuthorsResponse } from "../../../types/author.type";
+import { AUTHOR_QUERY } from "../../../queries";
 
 type CourseCardProps = {
   course: ICourseDetail;
@@ -19,7 +20,9 @@ type CourseCardProps = {
 function CourseCard({ course, role }: CourseCardProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const authors = queryClient.getQueryData(["authors"]);
+  const authors: IAuthorsResponse | undefined = queryClient.getQueryData([
+    AUTHOR_QUERY,
+  ]);
 
   return (
     <Paper elevation={2} className="my-1 p-1">
@@ -44,7 +47,7 @@ function CourseCard({ course, role }: CourseCardProps) {
           </div>
           <div id="created">
             <b>Created:&nbsp;&nbsp;</b>
-            {formatDate(course.creationDate)}
+            {formatDate(String(course.creationDate))}
           </div>
           <div id="showCourseBtn">
             <Box className="mt-5">
@@ -56,7 +59,10 @@ function CourseCard({ course, role }: CourseCardProps) {
                 >
                   Show Courses
                 </Button>
-                <AdminPanel isShow={role === "admin"} courseId={course.id} />
+                <AdminPanel
+                  isShow={role === "admin"}
+                  courseId={course.id as string}
+                />
               </Grid>
             </Box>
           </div>

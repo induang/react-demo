@@ -10,6 +10,7 @@ const httpRequest = axios.create({
   headers: {
     "Content-Type": "application/json;charset=utf-8",
     "Cache-Control": "no-cache",
+    isLoading: true,
   },
 });
 
@@ -75,7 +76,7 @@ httpRequest.interceptors.request.use(
 );
 
 httpRequest.interceptors.response.use(
-  (response: AxiosResponse) => {
+  (response) => {
     const token = response.headers?.Authorization;
     token && window.localStorage.setItem("user_token", token);
     if (response.config.headers.isLoading) {

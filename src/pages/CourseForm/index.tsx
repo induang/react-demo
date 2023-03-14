@@ -1,7 +1,8 @@
 import { withFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { fetchAddCourse, fetchUpdateCourse } from "../../services/course";
-import { createTodayDate } from "../../utils";
+
+import noti from "../../utils/noti";
 import CourseForm from "./components/CourseForm";
 import validator from "./validator";
 
@@ -29,25 +30,24 @@ export default withFormik<ICourseFormProps, ICourseFormDetail>({
 
   validationSchema: validator,
   handleSubmit: async (values) => {
-    console.log("handle submit: ", values);
-    let date = createTodayDate();
+    const navigate = useNavigate();
     let newCourse = {
       title: values.title,
       description: values.description,
-      creationDate: date,
       duration: values.duration,
       authors: values.authors,
     };
-    console.log("values: ", newCourse);
     if (values.id) {
       console.log("save course");
-      fetchUpdateCourse({ ...newCourse, id: values.id })
-        .then(() => console.log("update success."))
-        .catch((error) => console.log(error)); // TODO
+      fetchUpdateCourse({ ...newCourse, id: values.id }).then(() => {
+        noti({ type: "success", message: "Update Course Succeed." });
+        navigate("/courses");
+      });
     } else {
-      fetchAddCourse(newCourse).then(
-        () => console.log("create success.") // TODO
-      );
+      fetchAddCourse(newCourse).then(() => {
+        noti({ type: "success", message: "Add Course Succeed." });
+        navigate("/courses");
+      });
     }
   },
   displayName: "CourseForm",

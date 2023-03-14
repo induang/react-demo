@@ -1,5 +1,5 @@
-import { FunctionComponent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { FunctionComponent } from "react";
+import { useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Grid, Button } from "@mui/material";
 import { formatTime } from "../../../utils";
@@ -8,9 +8,10 @@ import React from "react";
 import InputField from "../../../components/InputField";
 import { FormikFormProps, FormikValues } from "formik";
 import { ICourseFormDetail } from "..";
-import { fetchAddAuthor } from "../../../services/author";
-import { useQuery } from "@tanstack/react-query";
+import { fetchAddAuthor, fetchAuthors } from "../../../services/author";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchCourseById } from "../../../services/course";
+import noti from "../../../utils/noti";
 
 const CourseForm: FunctionComponent<
   FormikFormProps & FormikValues & { data: ICourseFormDetail }
@@ -21,17 +22,34 @@ const CourseForm: FunctionComponent<
   const courseQuery = useQuery({
     queryKey: ["course", courseId],
     queryFn: () => fetchCourseById(courseId as string),
+    enabled: courseId,
   });
 
-  if (courseQuery?.data) setValues(courseQuery?.data?.result);
+  const authrosQuery = useQuery({
+    queryKey: ["author"],
+    queryFn: fetchAuthors,
+    enabled: courseId,
+  });
+
+  const addAuthorMutation = useMutation({
+    mutationFn: (name: string) => fetchAddAuthor(name),
+    onSuccess: () => {
+      noti({ type: "success", message: "Add Author Succeed." });
+    },
+  });
+
+  if (courseId && courseQuery?.data) setValues(courseQuery?.data?.result);
 
   const handleCreateAuthorClick = () => {
     if (values.newAuthor === "") {
-      console.log("empty"); // TODO noti
+      noti({ type: "warning", message: "author name should not be empty." });
     } else {
-      fetchAddAuthor(values.newAuthor).then(() =>
-        console.log("new author add.")
-      ); // TODO noti
+      addAuthorMutation.mutate(values.newAuthor);
+      addAuthorMutation.isSuccess &&
+        noti({
+          type: "success",
+          message: "Add Author Succeed.",
+        });
     }
   };
 
