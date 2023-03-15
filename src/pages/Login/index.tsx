@@ -2,38 +2,37 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Button, TextField } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-
-import { loginThunk } from "../../redux/slices/userSlice";
-
-import { RootState } from "../../types/store.type";
 import { H2, H4 } from "../../components/Title";
+import { ILoginer } from "../../types/user.type";
+import { useMutation } from "@tanstack/react-query";
+import { fetchLogin } from "../../services/auth";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const curUser = useAppSelector((state: RootState) => state.user);
-  const dispatch = useAppDispatch();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEmail(e.target.value);
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPassword(e.target.value);
 
+  const userLogin = useMutation({
+    mutationFn: (loginer: ILoginer) => fetchLogin(loginer),
+    onSuccess: (data) => {
+      window.localStorage.setItem("user_token", data.result);
+      window.localStorage.setItem("user_name", data.user.name);
+    },
+  });
   const handleLoginClick = () => {
-    const loginer = {
+    const loginer: ILoginer = {
       email: email,
       password: password,
     };
-    dispatch(loginThunk(loginer));
+    userLogin.mutate(loginer);
   };
 
-  useEffect(() => {
-    if (curUser.isAuth === true) {
-      navigate("/courses");
-    }
-  }, [curUser.isAuth]);
+  userLogin.isSuccess && navigate("/courses");
 
   return (
     <Box className="flex flex-col w-96 m-auto gap-4">

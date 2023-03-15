@@ -1,9 +1,9 @@
 import { Button, Grid } from "@mui/material";
 import React from "react";
-import { Author } from "../../../redux/slices/authorSlice";
+import { IAuthor } from "../../../types/author.type";
 
 type AuthorItemProps = {
-  author: Author;
+  author: IAuthor;
   buttonText: string;
   handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };

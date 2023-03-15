@@ -1,47 +1,59 @@
-import { FunctionComponent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { FunctionComponent, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Box } from "@mui/system";
-import { Grid, TextField, Button } from "@mui/material";
-import { useAppSelector, useAppDispatch } from "../../../redux/store/hooks";
-
-import { RootState } from "../../../types/store.type";
-
-import { Author, getAuthorsThunk } from "../../../redux/slices/authorSlice";
+import { Grid, Button } from "@mui/material";
 import { formatTime } from "../../../utils";
-
 import { H4, CH2 } from "../../../components/Title";
 import React from "react";
 import InputField from "../../../components/InputField";
 import { FormikFormProps, FormikValues } from "formik";
 import { ICourseFormDetail } from "..";
+import { fetchAddAuthor, fetchAuthors } from "../../../services/author";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchCourseById } from "../../../services/course";
-import { fetchAddAuthor } from "../../../services/author";
+import noti from "../../../utils/noti";
+import { COURSE_QUERY } from "../../../queries";
 
 const CourseForm: FunctionComponent<
   FormikFormProps & FormikValues & { data: ICourseFormDetail }
 > = (props) => {
   let { values, handleSubmit, setValues } = props;
   let { courseId } = useParams();
-  const dispatch = useAppDispatch();
+
+  const courseQuery = useQuery({
+    queryKey: [COURSE_QUERY, courseId],
+    queryFn: () => fetchCourseById(courseId as string),
+    enabled: Boolean(courseId),
+  });
+
+  const authrosQuery = useQuery({
+    queryKey: ["author"],
+    queryFn: fetchAuthors,
+  });
+
+  const addAuthorMutation = useMutation({
+    mutationFn: (name: string) => fetchAddAuthor(name),
+    onSuccess: () => {
+      noti({ type: "success", message: "Add Author Succeed." });
+    },
+  });
+
+  useEffect(() => {
+    if (courseId && courseQuery?.data) setValues(courseQuery?.data?.result);
+  }, [courseId, courseQuery.data]);
 
   const handleCreateAuthorClick = () => {
     if (values.newAuthor === "") {
-      console.log("empty"); // TODO noti
+      noti({ type: "warning", message: "author name should not be empty." });
     } else {
-      fetchAddAuthor(values.newAuthor).then(() =>
-        console.log("new author add.")
-      ); // TODO noti
+      addAuthorMutation.mutate(values.newAuthor);
+      addAuthorMutation.isSuccess &&
+        noti({
+          type: "success",
+          message: "Add Author Succeed.",
+        });
     }
   };
-
-  useEffect(() => {
-    dispatch(getAuthorsThunk());
-  }, []);
-
-  useEffect(() => {
-    courseId &&
-      fetchCourseById(courseId).then((res) => setValues(res.data.result));
-  }, [courseId]);
 
   return (
     <Box p={3} component="form" onSubmit={handleSubmit}>

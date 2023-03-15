@@ -1,27 +1,28 @@
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Paper, Grid, Button, Box } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { H1 } from "../../../components/Title";
-import { RootState } from "../../../types/store.type";
-import { deleteCourseThunk } from "../../../redux/slices/courseSlice";
-import { Author, getAuthorsThunk } from "../../../redux/slices/authorSlice";
 import { formatTime, formatDate } from "../../../utils";
-import { useAppSelector, useAppDispatch } from "../../../redux/store/hooks";
-import { CourseDetail } from "../../../types/course.type";
+import { ICourseDetail } from "../../../types/course.type";
 import React from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchAuthors } from "../../../services/author";
+import { IAuthor, IAuthorsResponse } from "../../../types/author.type";
+import { AUTHOR_QUERY } from "../../../queries";
 
 type CourseCardProps = {
-  course: CourseDetail;
+  course: ICourseDetail;
+  role: string;
 };
 
-function CourseCard({ course }: CourseCardProps) {
-  const { role } = useAppSelector((state: RootState) => state.user);
-  const authors = useAppSelector((state: RootState) => state.author.authors);
-
+function CourseCard({ course, role }: CourseCardProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const authors: IAuthorsResponse | undefined = queryClient.getQueryData([
+    AUTHOR_QUERY,
+  ]);
 
   return (
     <Paper elevation={2} className="my-1 p-1">
@@ -35,7 +36,9 @@ function CourseCard({ course }: CourseCardProps) {
             <b>Authors:&nbsp;&nbsp;</b>
             {course.authors.map(
               (id) =>
-                authors.filter((author: Author) => author.id === id)[0]?.name
+                authors?.result?.filter(
+                  (author: IAuthor) => author.id === id
+                )[0]?.name
             ) + " "}
           </div>
           <div id="durations">
@@ -44,7 +47,7 @@ function CourseCard({ course }: CourseCardProps) {
           </div>
           <div id="created">
             <b>Created:&nbsp;&nbsp;</b>
-            {formatDate(course.creationDate)}
+            {formatDate(String(course.creationDate))}
           </div>
           <div id="showCourseBtn">
             <Box className="mt-5">
@@ -56,7 +59,10 @@ function CourseCard({ course }: CourseCardProps) {
                 >
                   Show Courses
                 </Button>
-                <AdminPanel isShow={role === "admin"} courseId={course.id} />
+                <AdminPanel
+                  isShow={role === "admin"}
+                  courseId={course.id as string}
+                />
               </Grid>
             </Box>
           </div>
@@ -73,10 +79,7 @@ interface AdminPanelProps {
 
 function AdminPanel({ isShow, courseId }: AdminPanelProps) {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const handleDeleteCourseClick = (id: string) => {
-    dispatch(deleteCourseThunk(id));
-  };
+  const handleDeleteCourseClick = (id: string) => {};
   return (
     <>
       {isShow ? (

@@ -1,43 +1,40 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Button, Grid } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 
 import SearchBar from "./components/SearchBar";
 import CourseCard from "./components/CourseCard";
-import { AppDispatch, RootState } from "../../types/store.type";
-import { getCoursesThunk } from "../../redux/slices/courseSlice";
 import React from "react";
-import { CourseDetail } from "../../types/course.type";
-import { getAuthorsThunk } from "../../redux/slices/authorSlice";
+import { ICourseDetail } from "../../types/course.type";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCourses } from "../../services/course";
+import { fetchAuthors } from "../../services/author";
+import { fetchAuthorization } from "../../services/auth";
+import { AUTHOR_QUERY, AUTH_QUERY, COURSE_QUERY } from "../../queries";
 
 const Course: React.FC = () => {
-  const courses = useAppSelector((state: RootState) => state.course.courses);
-  const dispatch: AppDispatch = useAppDispatch();
-  const [curCourses, setCurCourses] = useState(courses);
+  const courses = useQuery({
+    queryKey: [COURSE_QUERY],
+    queryFn: fetchCourses,
+  });
+  const authorsQuery = useQuery({
+    queryKey: [AUTHOR_QUERY],
+    queryFn: fetchAuthors,
+  });
+  const authenQuery = useQuery({
+    queryKey: [AUTH_QUERY],
+    queryFn: fetchAuthorization,
+  });
+  const role = authenQuery?.data?.result.role || "";
+  // function courseFilter(course: ICourseDetail, value: string) {
+  //   return (
+  //     course.title.toLowerCase().search(new RegExp(value, "i")) !== -1 ||
+  //     course.id.search(value) !== -1
+  //   );
+  // }
+  if (courses.isLoading) return <>Loading...</>;
 
-  useEffect(() => {
-    dispatch(getCoursesThunk());
-    dispatch(getAuthorsThunk());
-  }, []);
-
-  useEffect(() => {
-    setCurCourses(courses);
-  }, [courses]);
-
-  function courseFilter(course: CourseDetail, value: string) {
-    return (
-      course.title.toLowerCase().search(new RegExp(value, "i")) !== -1 ||
-      course.id.search(value) !== -1
-    );
-  }
-
-  function handleSearch(value: string) {
-    setCurCourses([
-      ...courses.filter((course: CourseDetail) => courseFilter(course, value)),
-    ]);
-  }
+  function handleSearch(value: string) {}
 
   return (
     <Box padding={3}>
@@ -55,13 +52,9 @@ const Course: React.FC = () => {
       </Grid>
       {/* 课程列表渲染 */}
       <Box>
-        {curCourses && curCourses.length ? (
-          curCourses.map((course: CourseDetail) => (
-            <CourseCard key={course.id} course={course} />
-          ))
-        ) : (
-          <span>Loading...</span>
-        )}
+        {courses.data?.result?.map((course: ICourseDetail) => (
+          <CourseCard key={course.id} course={course} role={role} />
+        ))}
       </Box>
     </Box>
   );

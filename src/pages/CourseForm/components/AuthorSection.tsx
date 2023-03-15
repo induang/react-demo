@@ -1,15 +1,15 @@
 import { Box } from "@mui/system";
 
-import { Author } from "../../../redux/slices/authorSlice";
 import AuthorItem from "./AuthorItem";
 
 import { CH4 } from "../../../components/Title";
 import React from "react";
+import { IAuthor } from "../../../types/author.type";
 
 type AuthorSectionProps = {
-  currentAuthors: Author[];
+  currentAuthors: IAuthor[];
   handleAddAuthorClick: (id: string) => void;
-  courseAuthors: Author[];
+  courseAuthors: IAuthor[];
   handleDeleteAuthorClick: (id: string) => void;
 };
 
@@ -24,7 +24,7 @@ function AuthorSection({
       <CH4 text="Authors" />
       <div>
         {currentAuthors && currentAuthors.length ? (
-          currentAuthors.map((author: Author) => (
+          currentAuthors.map((author: IAuthor) => (
             <AuthorItem
               key={author.id}
               author={author}
@@ -39,7 +39,7 @@ function AuthorSection({
       <CH4 text="Course Authors" />
       <div>
         {courseAuthors && courseAuthors.length ? (
-          courseAuthors.map((courseAuthor: Author) => {
+          courseAuthors.map((courseAuthor: IAuthor) => {
             return (
               <AuthorItem
                 key={courseAuthor.id}

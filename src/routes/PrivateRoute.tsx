@@ -1,14 +1,19 @@
+import { useQuery } from "@tanstack/react-query";
 import { Navigate } from "react-router-dom";
-import { RootState } from "../types/store.type";
-import { useAppSelector } from "../redux/store/hooks";
-import React from "react";
+import { fetchAuthorization } from "../services/auth";
+import noti from "../utils/noti";
 
-export default function Auth({ children }: { children: JSX.Element }) {
-  const user = useAppSelector((state: RootState) => state.user);
-  const accessRole = user.role;
-  if (accessRole === "admin") {
-    return children;
-  } else {
+export default function PrivateRoute({ children }: { children: JSX.Element }) {
+  const authQuery = useQuery({
+    queryKey: ["auth"],
+    queryFn: fetchAuthorization,
+  });
+  if (authQuery?.data?.result.role === "admin") return children;
+  else {
+    noti({
+      type: "warning",
+      message: "No access.",
+    });
     return <Navigate to="/courses" replace />;
   }
 }
