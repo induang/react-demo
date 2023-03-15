@@ -32,7 +32,8 @@ function Header() {
           <img src={logo} alt="logo" className="w-24" />
         </Grid>
         <Grid item>
-          {currentPath.includes("login") ||
+          {currentPath.slice(0, -1) === String(window.location.origin) ||
+          currentPath.includes("login") ||
           currentPath.includes("registration") ? (
             <></>
           ) : (

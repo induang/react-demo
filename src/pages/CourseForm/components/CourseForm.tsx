@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Grid, Button } from "@mui/material";
@@ -12,6 +12,7 @@ import { fetchAddAuthor, fetchAuthors } from "../../../services/author";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchCourseById } from "../../../services/course";
 import noti from "../../../utils/noti";
+import { COURSE_QUERY } from "../../../queries";
 
 const CourseForm: FunctionComponent<
   FormikFormProps & FormikValues & { data: ICourseFormDetail }
@@ -20,15 +21,14 @@ const CourseForm: FunctionComponent<
   let { courseId } = useParams();
 
   const courseQuery = useQuery({
-    queryKey: ["course", courseId],
+    queryKey: [COURSE_QUERY, courseId],
     queryFn: () => fetchCourseById(courseId as string),
-    enabled: courseId,
+    enabled: Boolean(courseId),
   });
 
   const authrosQuery = useQuery({
     queryKey: ["author"],
     queryFn: fetchAuthors,
-    enabled: courseId,
   });
 
   const addAuthorMutation = useMutation({
@@ -38,7 +38,9 @@ const CourseForm: FunctionComponent<
     },
   });
 
-  if (courseId && courseQuery?.data) setValues(courseQuery?.data?.result);
+  useEffect(() => {
+    if (courseId && courseQuery?.data) setValues(courseQuery?.data?.result);
+  }, [courseId, courseQuery.data]);
 
   const handleCreateAuthorClick = () => {
     if (values.newAuthor === "") {

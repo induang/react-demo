@@ -27,7 +27,6 @@ export default withFormik<ICourseFormProps, ICourseFormDetail>({
     return {} as ICourseFormDetail;
   },
   enableReinitialize: true,
-
   validationSchema: validator,
   handleSubmit: async (values) => {
     const navigate = useNavigate();

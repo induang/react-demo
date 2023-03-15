@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import App from "../App";
-import RequireAuth from "./Privateroute";
+import RequireAuth from "./PrivateRoute";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import Login from "../pages/Login";
 import React from "react";
