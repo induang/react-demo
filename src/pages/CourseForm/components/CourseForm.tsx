@@ -3,22 +3,25 @@ import { useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Grid, Button } from "@mui/material";
 import { formatTime } from "../../../utils";
-import { H4, CH2 } from "../../../components/Title";
+import { H4, CH2, CH4 } from "../../../components/Title";
 import React from "react";
 import InputField from "../../../components/InputField";
 import { FormikFormProps, FormikValues } from "formik";
 import { ICourseFormDetail } from "..";
 import { fetchAddAuthor, fetchAuthors } from "../../../services/author";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchCourseById } from "../../../services/course";
 import noti from "../../../utils/noti";
-import { COURSE_QUERY } from "../../../queries";
+import { AUTHOR_QUERY, COURSE_QUERY } from "../../../queries";
+import AuthorItem from "./AuthorItem";
+import { IAuthor } from "../../../types/author.type";
 
 const CourseForm: FunctionComponent<
   FormikFormProps & FormikValues & { data: ICourseFormDetail }
 > = (props) => {
   let { values, handleSubmit, setValues } = props;
   let { courseId } = useParams();
+  const queryClient = useQueryClient();
 
   const courseQuery = useQuery({
     queryKey: [COURSE_QUERY, courseId],
@@ -30,11 +33,12 @@ const CourseForm: FunctionComponent<
     queryKey: ["author"],
     queryFn: fetchAuthors,
   });
-
+  const authors = authrosQuery.data?.result;
   const addAuthorMutation = useMutation({
     mutationFn: (name: string) => fetchAddAuthor(name),
     onSuccess: () => {
       noti({ type: "success", message: "Add Author Succeed." });
+      queryClient.invalidateQueries([AUTHOR_QUERY]);
     },
   });
 
@@ -53,6 +57,24 @@ const CourseForm: FunctionComponent<
           message: "Add Author Succeed.",
         });
     }
+  };
+
+  const handleAuthorToCourseAuthorClick = (id: string) => {
+    const newAuthors = [...(values.authors || []), id];
+    setValues({
+      ...values,
+      authors: newAuthors,
+    });
+  };
+
+  const handleCourseAuthorToAuthorClick = (id: string) => {
+    const newAuthors = values.authors.filter(
+      (authorId: string) => authorId !== id
+    );
+    setValues({
+      ...values,
+      authors: newAuthors,
+    });
   };
 
   return (
@@ -137,7 +159,42 @@ const CourseForm: FunctionComponent<
             </Box>
           </Grid>
           <Grid item xs={6} className="flex justify-center">
-            {/* 作者列表 */}
+            <Box>
+              <CH4 text="Course Authors" />
+              <div>
+                {values.authors?.map((id: string) => {
+                  const theAuthor = authors?.filter(
+                    (author) => author.id === id
+                  )[0];
+                  return (
+                    <AuthorItem
+                      key={id}
+                      author={theAuthor || ({} as IAuthor)}
+                      buttonText="Delete Author"
+                      handleClick={(event) =>
+                        handleCourseAuthorToAuthorClick(id)
+                      }
+                    />
+                  );
+                })}
+              </div>
+              <CH4 text="Authors" />
+              <div>
+                {authors?.map(
+                  (author) =>
+                    !values.authors?.includes(author.id) && (
+                      <AuthorItem
+                        key={author.id}
+                        author={author}
+                        buttonText="Add Author"
+                        handleClick={(event) =>
+                          handleAuthorToCourseAuthorClick(author.id)
+                        }
+                      />
+                    )
+                )}
+              </div>
+            </Box>
           </Grid>
         </Grid>
       </Box>
