@@ -15,7 +15,7 @@ const httpRequest = axios.create({
 });
 
 let requestCount = 0;
-let timer = 0;
+let timer: NodeJS.Timeout;
 let loadingCreated = false;
 function showLoadingComponent() {
   if (!loadingCreated) {
