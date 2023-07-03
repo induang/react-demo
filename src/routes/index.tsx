@@ -9,6 +9,7 @@ import Registration from "../pages/Registration";
 import Course from "../pages/Course";
 import CourseForm from "../pages/CourseForm";
 import CourseInfo from "../pages/CourseInfo";
+import CourseTable from "../pages/CourseTable";
 
 const requireCourseForm = (children: ReactJSXElement) => (
   <RequireAuth>{children}</RequireAuth>
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: "courses/update/:courseId",
         element: requireCourseForm(<CourseForm />),
+      },
+      {
+        path: "course-table",
+        element: <CourseTable />,
       },
     ],
   },
